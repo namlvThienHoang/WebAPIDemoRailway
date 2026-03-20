@@ -9,8 +9,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 # Copy file csproj và restore
-COPY ["WebAPIDemoRailway.csproj", "WebAPIDemoRailway/"]
-RUN dotnet restore "WebAPIDemoRailway.csproj"
+COPY ["WebAPIDemoRailway/WebAPIDemoRailway.csproj", "WebAPIDemoRailway/"]
+RUN dotnet restore "WebAPIDemoRailway/WebAPIDemoRailway.csproj"
 # Copy toàn bộ code
 COPY . .
 WORKDIR "/src/WebAPIDemoRailway"
