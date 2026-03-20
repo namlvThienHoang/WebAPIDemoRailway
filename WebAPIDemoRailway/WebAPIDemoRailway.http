@@ -1,0 +1,6 @@
+@WebAPIDemoRailway_HostAddress = http://localhost:5130
+
+GET {{WebAPIDemoRailway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
