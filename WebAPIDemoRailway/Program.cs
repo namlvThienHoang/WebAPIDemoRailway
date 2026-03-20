@@ -5,12 +5,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+var pgHost     = Environment.GetEnvironmentVariable("PGHOST");
+var pgPort     = Environment.GetEnvironmentVariable("PGPORT");
+var pgUser     = Environment.GetEnvironmentVariable("PGUSER");
+var pgPassword = Environment.GetEnvironmentVariable("PGPASSWORD");
+var pgDatabase = Environment.GetEnvironmentVariable("PGDATABASE");
 
-// Nếu chạy local (không có biến DATABASE_URL), hãy dùng chuỗi mặc định trong appsettings.json
-if (string.IsNullOrEmpty(connectionString))
+string connectionString;
+
+if (!string.IsNullOrEmpty(pgHost) &&
+    !string.IsNullOrEmpty(pgPort) &&
+    !string.IsNullOrEmpty(pgUser) &&
+    !string.IsNullOrEmpty(pgPassword) &&
+    !string.IsNullOrEmpty(pgDatabase))
 {
-    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    // Build connection string from individual Railway Postgres variables
+    connectionString = $"Host={pgHost};Port={pgPort};Username={pgUser};Password={pgPassword};Database={pgDatabase}";
+}
+else
+{
+    // Fall back to appsettings.json DefaultConnection for local development
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 }
 
 builder.Services.AddDbContext<AppDbContext>(options =>
