@@ -5,9 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var pgHost     = Environment.GetEnvironmentVariable("PGHOST");
-var pgPort     = Environment.GetEnvironmentVariable("PGPORT");
-var pgUser     = Environment.GetEnvironmentVariable("PGUSER");
+var pgHost = Environment.GetEnvironmentVariable("PGHOST");
+var pgPort = Environment.GetEnvironmentVariable("PGPORT");
+var pgUser = Environment.GetEnvironmentVariable("PGUSER");
 var pgPassword = Environment.GetEnvironmentVariable("PGPASSWORD");
 var pgDatabase = Environment.GetEnvironmentVariable("PGDATABASE");
 
@@ -29,7 +29,14 @@ else
 }
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString,
+        npg =>
+        {
+            npg.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+            npg.SetPostgresVersion(15, 0);
+        }));
+
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
